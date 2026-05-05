@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+padding: 32px 16px;
+font-family: Arial, sans-serif;
+min-height: 100vh;
+background-color: #0f172a;
+background-image:
+radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.35), transparent 34%),
+radial-gradient(circle at 85% 10%, rgba(167, 139, 250, 0.32), transparent 38%),
+radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.18), transparent 40%),
+linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #172554 100%);
+background-repeat: no-repeat;
+background-attachment: fixed;
+}
+
+.pricing-layout {
+max-width: 980px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+gap: 16px;
+}
+</style>
+</head>
+<body>
+
+<template id="pricing-card-template">
+<style>
+.pricing {
+width: 100%;
+background-color: #fff;
+box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+border-radius: 12px;
+padding: 16px;
+text-align: left;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.title {
+font-size: 22px;
+font-weight: bold;
+margin: 0;
+}
+
+.price {
+font-size: 18px;
+color: var(--price-color, #1a7f37);
+font-weight: 600;
+margin: 0;
+}
+
+.features {
+list-style: none;
+padding-left: 0;
+margin: 8px 0;
+}
+
+.features li {
+padding: 8px 0;
+border-bottom: 1px solid #eee;
+}
+
+.features li:last-child {
+border-bottom: none;
+}
+
+.btn {
+background: var(--accent-color, #1456d9);
+color: #fff;
+padding: 10px 16px;
+border: none;
+border-radius: 8px;
+margin-top: 8px;
+cursor: pointer;
+font-weight: 600;
+}
+
+.btn:hover {
+background: var(--accent-hover-color, #0f45ad);
+}
+</style>
+
+<article class="pricing">
+<h2 class="title"></h2>
+<p class="price"></p>
+<ul class="features"></ul>
+<button class="btn"></button>
+</article>
+</template>
+
+<section class="pricing-layout">
+<pricing-card
+title="Basic Plan"
+price="$9.99 /month"
+features="1 GB Storage|Basic Support|All Core Features"
+button-text="Start Trial"
+accent-color="#1456d9"
+accent-hover-color="#0f45ad"
+></pricing-card>
+
+<pricing-card
+title="Pro Plan"
+price="$19.99 /month"
+features="10 GB Storage|Priority Support|Advanced Analytics"
+button-text="Start Pro Trial"
+accent-color="#7c3aed"
+accent-hover-color="#6029bb"
+></pricing-card>
+</section>
+
+<script>
+class PricingCard extends HTMLElement {
+connectedCallback() {
+const template = document.getElementById("pricing-card-template");
+const fragment = template.content.cloneNode(true);
+const root = fragment.querySelector(".pricing");
+
+const title = this.getAttribute("title") || "Untitled Plan";
+const price = this.getAttribute("price") || "$0.00 /month";
+const featuresRaw = this.getAttribute("features") || "";
+const buttonText = this.getAttribute("button-text") || "Get Started";
+const accentColor = this.getAttribute("accent-color");
+const accentHoverColor = this.getAttribute("accent-hover-color");
+
+root.querySelector(".title").textContent = title;
+root.querySelector(".price").textContent = price;
+root.querySelector(".btn").textContent = buttonText;
+
+if (accentColor) {
+root.style.setProperty("--accent-color", accentColor);
+}
+if (accentHoverColor) {
+root.style.setProperty("--accent-hover-color", accentHoverColor);
+}
+
+const featuresList = root.querySelector(".features");
+featuresRaw
+.split("|")
+.map((item) => item.trim())
+.filter(Boolean)
+.forEach((feature) => {
+const li = document.createElement("li");
+li.textContent = feature;
+featuresList.appendChild(li);
+});
+
+this.replaceChildren(fragment);
+}
+}
+
+customElements.define("pricing-card", PricingCard);
+</script>
+
+</body>
+</html>

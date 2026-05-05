@@ -1,1 +1,1 @@
-# workflow_ia
+// i have  received a broken web component: a pricing card layout with layout issues and unresponsive buttons. my task is to fix, refactor, and prepare it for reuse using AI.
